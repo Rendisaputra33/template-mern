@@ -25,10 +25,6 @@ class Module {
   debug(app) {
     app.use(loger("dev"));
   }
-
-  alias() {
-    require("module-alias/register");
-  }
 }
 
 const Init = (app) => {
@@ -38,7 +34,6 @@ const Init = (app) => {
   start.connecting();
   start.cookieSetup(app);
   start.debug(app);
-  start.alias();
 };
 
 module.exports = { Init };

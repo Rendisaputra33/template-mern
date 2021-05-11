@@ -1,14 +1,15 @@
 const express = require("express");
 const app = express();
-require("module-alias/register");
 const Module = require("./server/configs/Module");
 const { User } = require("./server/models/User");
+const { Modu } = require("module-alias/register");
 const hash = require("hash");
 
 Module.Init(app);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("server ok!");
+  console.log(`running on http://localhost:${process.env.PORT}`);
 });
 
 app.post("/api/users/register", async (req, res) => {
@@ -20,7 +21,7 @@ app.post("/api/users/register", async (req, res) => {
 
   await user.save((err, userData) => {
     if (err) return res.json({ success: false, err });
-    if (userData) return res.json({ data: userData });
+    if (userData) return res.json({ success: true, data: userData });
   });
 });
 
