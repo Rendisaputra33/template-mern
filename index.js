@@ -1,6 +1,9 @@
-const express = require('express')
-const app = express()
+const express = require("express");
+const app = express();
+const Module = require("./server/configs/Module");
 
-app.listen(3000, () => {
-    console.log('server ok!')
-})
+Module.Init();
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log("server ok!");
+});

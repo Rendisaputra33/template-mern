@@ -1,1 +1,15 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+
+const initConnection = () => {
+  mongoose.connect(process.env.MONGO_URI, {
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  });
+  const db = mongoose.connection;
+
+  db.on("error", (error) => console.error(error));
+  db.once("open", () => console.log("connection succes"));
+};
+
+module.exports = initConnection;
