@@ -1,26 +1,44 @@
 const evn = require("dotenv");
 const parser = require("body-parser");
 const conection = require("./Connection");
+const cookieParser = require("cookie-parser");
+const loger = require("morgan");
 
 class Module {
   env() {
     return evn.config();
   }
 
-  bodyParser() {
-    return parser;
+  bodyParser(app) {
+    app.use(parser.urlencoded({ extended: false }));
+    app.use(parser.json());
   }
 
   connecting() {
     return conection();
   }
+
+  cookieSetup(app) {
+    app.use(cookieParser());
+  }
+
+  debug(app) {
+    app.use(loger("dev"));
+  }
+
+  alias() {
+    require("module-alias/register");
+  }
 }
 
-const Init = () => {
+const Init = (app) => {
   const start = new Module();
   start.env();
-  start.bodyParser();
+  start.bodyParser(app);
   start.connecting();
+  start.cookieSetup(app);
+  start.debug(app);
+  start.alias();
 };
 
 module.exports = { Init };
