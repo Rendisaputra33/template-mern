@@ -15,4 +15,12 @@ const hashPassword = async (password, saltRounds = 10) => {
   return null;
 };
 
-module.exports = hashPassword;
+const comparePassword = async (pw, hash) => {
+  try {
+    return await bcrypt.compare(pw, hash);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { hashPassword, comparePassword };
