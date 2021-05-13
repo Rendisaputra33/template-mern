@@ -9,7 +9,7 @@ const initConnection = () => {
   const db = mongoose.connection;
 
   db.on("error", (error) => console.error(error));
-  db.once("open", () => console.log("connection succes"));
+  db.once("open", () => console.log("connection success"));
 };
 
 module.exports = initConnection;
