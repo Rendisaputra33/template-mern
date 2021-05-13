@@ -3,6 +3,7 @@ const parser = require("body-parser");
 const conection = require("./Connection");
 const cookieParser = require("cookie-parser");
 const loger = require("morgan");
+const jwt = require("jsonwebtoken");
 
 class Module {
   env() {
