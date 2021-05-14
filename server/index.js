@@ -14,12 +14,19 @@ app.listen(process.env.PORT || 3000, () => {
 
 app.use("/api/users", userRoute);
 
-app.get("/coba", auth, (req, res) => {
+app.get("/api/coba", auth, (req, res) => {
   res.status(200).json({
     _id: req._id,
     isAuth: true,
     email: req.user.email,
     name: req.user.name,
     role: req.user.role,
+  });
+});
+
+app.get("/api/hello", (req, res) => {
+  res.json({
+    data: "hello world!",
+    about: "api nodejs",
   });
 });
