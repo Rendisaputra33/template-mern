@@ -41,4 +41,11 @@ router.get("/logout", auth, (req, res) => {
   });
 });
 
+router.get("/auth", auth, (req, res) => {
+  res.json({
+    status: 'ok',
+    data : 'hello'
+  })
+})
+
 module.exports = router;

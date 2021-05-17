@@ -4,6 +4,7 @@ const conection = require("./Connection");
 const cookieParser = require("cookie-parser");
 const loger = require("morgan");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 
 class Module {
   env() {
@@ -11,7 +12,7 @@ class Module {
   }
 
   bodyParser(app) {
-    app.use(parser.urlencoded({ extended: false }));
+    app.use(parser.urlencoded({ extended: true }));
     app.use(parser.json());
   }
 
@@ -26,6 +27,11 @@ class Module {
   debug(app) {
     app.use(loger("dev"));
   }
+
+  corsSetup(app) {
+    app.use(cors())
+  }
+
 }
 
 const Init = (app) => {
@@ -35,6 +41,7 @@ const Init = (app) => {
   start.connecting();
   start.cookieSetup(app);
   start.debug(app);
+  start.corsSetup(app);
 };
 
 module.exports = { Init };

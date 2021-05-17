@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
     if (!user)
       return res.status(401).json({
         auth: false,
-        error: true,
+        error: true
       });
     req.token = token;
     req.user = user;

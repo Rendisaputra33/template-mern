@@ -4,8 +4,11 @@ const Module = require("./configs/Module");
 const { Modu } = require("module-alias/register");
 const { auth } = require("./middlewares/Auth");
 const userRoute = require("./routes/user.routes");
+const cors = require("cors");
 
 Module.Init(app);
+
+app.use(cors());
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("server ok!");
@@ -24,9 +27,11 @@ app.get("/api/coba", auth, (req, res) => {
   });
 });
 
-app.get("/api/hello", (req, res) => {
+app.get("/api/hello", auth, (req, res) => {
   res.json({
     data: "hello world!",
     about: "api nodejs",
   });
 });
+
+
