@@ -5,17 +5,24 @@ const { Modu } = require("module-alias/register");
 const { auth } = require("./middlewares/Auth");
 const userRoute = require("./routes/user.routes");
 const cors = require("cors");
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 Module.Init(app);
 
 app.use(cors());
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("server ok!");
-  console.log(`running on http://localhost:${process.env.PORT}`);
-});
-
 app.use("/api/users", userRoute);
+
+io.on("connection", (socket) => {
+  socket.on("Input Chat Message", (msg) => {
+    return io.emit("Output Chat Message", msg);
+  });
+});
 
 app.get("/api/coba", auth, (req, res) => {
   res.status(200).json({
@@ -34,4 +41,9 @@ app.get("/api/hello", auth, (req, res) => {
   });
 });
 
+app.use("/uploads", express.static("uploads"));
 
+server.listen(process.env.PORT || 3000, () => {
+  console.log("server ok!");
+  console.log(`running on http://localhost:${process.env.PORT}`);
+});
