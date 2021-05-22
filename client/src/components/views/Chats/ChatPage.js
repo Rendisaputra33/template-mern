@@ -8,13 +8,21 @@ import axios from "axios";
 class ChatPage extends Component {
   state = {
     chatMessage: "",
+    listChat: [],
   };
 
   componentDidMount() {
+    axios
+      .get("/api/getChat")
+      .then((res) => this.setState({ listChat: res.data }));
+
     const server = "http://localhost:5000";
     this.socket = io(server);
     this.socket.on("Output Chat Message", (messagefrombackend) => {
-      console.log(messagefrombackend);
+      this.setState({
+        listChat: [...this.state.listChat, { ...messagefrombackend }],
+      });
+      console.log(this.state.listChat);
     });
   }
 
@@ -22,16 +30,15 @@ class ChatPage extends Component {
     this.setState({
       chatMessage: e.target.value,
     });
-    console.log(this.props);
   };
 
   submitChat = (e) => {
     e.preventDefault();
-    let chatMessage = this.state.chatMessage;
-    let userId = this.props.user.userData._id;
-    let userName = this.props.user.userData.name;
-    let nowTime = moment();
-    let type = "image";
+    const chatMessage = this.state.chatMessage;
+    const userId = this.props.user.userData._id;
+    const userName = this.props.user.userData.name;
+    const nowTime = moment();
+    const type = "image";
 
     this.socket.emit("Input Chat Message", {
       chatMessage,

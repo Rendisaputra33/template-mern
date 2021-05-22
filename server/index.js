@@ -5,6 +5,7 @@ const { Modu } = require("module-alias/register");
 const { auth } = require("./middlewares/Auth");
 const userRoute = require("./routes/user.routes");
 const cors = require("cors");
+const { Chat } = require("./models/Chat");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
@@ -20,7 +21,15 @@ app.use("/api/users", userRoute);
 
 io.on("connection", (socket) => {
   socket.on("Input Chat Message", (msg) => {
-    return io.emit("Output Chat Message", msg);
+    const chat = new Chat({
+      message: msg.chatMessage,
+      sender: msg.userId,
+      type: msg.type,
+    });
+
+    chat.save((err, chatData) => {
+      return io.emit("Output Chat Message", chatData);
+    });
   });
 });
 
@@ -38,6 +47,13 @@ app.get("/api/hello", auth, (req, res) => {
   res.json({
     data: "hello world!",
     about: "api nodejs",
+  });
+});
+
+app.get("/api/getChat", (req, res) => {
+  Chat.find(function (err, chats) {
+    if (err) return res.send(err);
+    res.send(chats);
   });
 });
 
