@@ -1,4 +1,3 @@
-const { now } = require("moment");
 const mongoose = require("mongoose");
 
 const chatSchema = mongoose.Schema(
@@ -7,8 +6,8 @@ const chatSchema = mongoose.Schema(
       type: String,
     },
     sender: {
-      type: String,
-      ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
     },
     type: {
       type: String,

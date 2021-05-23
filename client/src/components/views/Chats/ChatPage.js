@@ -3,25 +3,20 @@ import { Form, Icon, Input, Button, Row, Col } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import io from "socket.io-client";
-import axios from "axios";
-import { getChats } from "../../../_actions/chat_action";
+import { getChats, loadChat } from "../../../_actions/chat_action";
+import ChatCard from "./ChatCard";
 
 class ChatPage extends Component {
   state = {
     chatMessage: "",
-    listChat: [],
   };
 
   componentDidMount() {
     this.props.dispatch(getChats());
-    axios.get("/api/chat/getchat").then((res) => console.log(res.data));
     const server = "http://localhost:5000";
     this.socket = io(server);
     this.socket.on("Output Chat Message", (messagefrombackend) => {
-      this.setState({
-        listChat: [...this.state.listChat, { ...messagefrombackend }],
-      });
-      console.log(this.state.listChat);
+      this.props.dispatch(loadChat(messagefrombackend));
     });
   }
 
@@ -59,11 +54,15 @@ class ChatPage extends Component {
         </div>
         {/* this header */}
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <div className="infinite-container">
-            {/* this for chat */}
+          <div className="infinite-container" style={{ height: '500px', overflowY: 'scroll' }}>
+            {this.props.chats.chats &&
+              this.props.chats.chats.map((chat) => {
+                return <ChatCard key={chat._id} {...chat} />;
+              })}
+
             <div
               ref={(el) => {
-                this.messageEnd = el;
+                this.messagesEnd = el;
               }}
               style={{ float: "left", clear: "both" }}
             />
@@ -104,6 +103,7 @@ class ChatPage extends Component {
 const mapState = (state) => {
   return {
     user: state.user,
+    chats: state.chat,
   };
 };
 

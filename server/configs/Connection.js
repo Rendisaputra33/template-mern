@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const initConnection = () => {
-  mongoose.connect(process.env.MONGO_URI, {
+  mongoose.connect(process.env.MONGO_URI_DEV, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
