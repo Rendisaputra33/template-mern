@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import moment from "moment";
 import io from "socket.io-client";
 import axios from "axios";
+import { getChats } from "../../../_actions/chat_action";
 
 class ChatPage extends Component {
   state = {
@@ -12,10 +13,8 @@ class ChatPage extends Component {
   };
 
   componentDidMount() {
-    axios
-      .get("/api/getChat")
-      .then((res) => this.setState({ listChat: res.data }));
-
+    this.props.dispatch(getChats());
+    axios.get("/api/chat/getchat").then((res) => console.log(res.data));
     const server = "http://localhost:5000";
     this.socket = io(server);
     this.socket.on("Output Chat Message", (messagefrombackend) => {

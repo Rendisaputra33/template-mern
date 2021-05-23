@@ -57,6 +57,8 @@ app.get("/api/getChat", (req, res) => {
   });
 });
 
+app.use("/api/chat", require("./routes/chat.routes"));
+
 app.use("/uploads", express.static("uploads"));
 
 server.listen(process.env.PORT || 3000, () => {
