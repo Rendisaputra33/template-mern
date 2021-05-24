@@ -38,6 +38,8 @@
     "nodemon": "^2.0.7"
   },
   "_moduleAliases": {
-    "hash": "server/helpers/hashPassword.js"
+    "hash": "server/helpers/hashPassword.js",
+    "socket" : "server/configs/Socket.js",
+    "module" : "server/configs/Module.js"
   }
 }

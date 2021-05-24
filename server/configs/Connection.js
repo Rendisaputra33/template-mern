@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
 const initConnection = () => {
-  mongoose.connect(process.env.MONGO_URI_DEV, {
+  let url = ''
+  process.env.NODE_ENV === 'production' ? url = process.env.MONGO_URI_PRO : url = process.env.MONGO_URI_DEV
+  mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

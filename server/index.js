@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
-const Module = require("./configs/Module");
 const { Modu } = require("module-alias/register");
 const server = require("http").createServer(app);
-const Socket = require("./configs/Socket");
+const Socket = require("socket");
+const Module = require("module");
 
 // open connection socket
 new Socket(server).init();

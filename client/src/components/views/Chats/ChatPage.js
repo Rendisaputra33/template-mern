@@ -13,11 +13,24 @@ class ChatPage extends Component {
 
   componentDidMount() {
     this.props.dispatch(getChats());
-    const server = "http://localhost:5000";
+    const server = "http://localhost:5000/";
     this.socket = io(server);
     this.socket.on("Output Chat Message", (messagefrombackend) => {
       this.props.dispatch(loadChat(messagefrombackend));
     });
+  }
+
+  componentDidUpdate = () => {
+    this.messagesEnd.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  renderCards = () => {
+    return (this.props.chats.chats&&
+    this.props.chats.chats.map(chat => {
+      return(
+        <ChatCard key={chat._id} {...chat} />
+      )
+    }))
   }
 
   handleChange = (e) => {
@@ -28,21 +41,17 @@ class ChatPage extends Component {
 
   submitChat = (e) => {
     e.preventDefault();
-    const chatMessage = this.state.chatMessage;
-    const userId = this.props.user.userData._id;
-    const userName = this.props.user.userData.name;
-    const nowTime = moment();
-    const type = "image";
 
-    this.socket.emit("Input Chat Message", {
-      chatMessage,
-      userId,
-      userName,
-      nowTime,
-      type,
-    });
-
-    this.setState({ chatMessage: "" });
+    if(this.state.chatMessage != "") {
+      this.socket.emit("Input Chat Message", {
+        chatMessage : this.state.chatMessage,
+        userId : this.props.user.userData._id,
+        userName : this.props.user.userData.name,
+        nowTime : moment(),
+        type : "image",
+      });
+      this.setState({ chatMessage: "" });
+    }
   };
 
   render() {
@@ -55,10 +64,10 @@ class ChatPage extends Component {
         {/* this header */}
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div className="infinite-container" style={{ height: '500px', overflowY: 'scroll' }}>
-            {this.props.chats.chats &&
-              this.props.chats.chats.map((chat) => {
-                return <ChatCard key={chat._id} {...chat} />;
-              })}
+
+            {this.props.chats && (
+              <div>{this.renderCards()}</div>
+            )}
 
             <div
               ref={(el) => {
@@ -68,7 +77,7 @@ class ChatPage extends Component {
             />
           </div>
           <Row>
-            <Form layout="inline" onSubmit={this.submitChat}>
+            <Form layout="inline" onSubmit={this.submitChat} style={{ marginTop: '10px' }}>
               <Col span={18}>
                 <Input
                   id="message"

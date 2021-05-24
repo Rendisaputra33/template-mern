@@ -5,7 +5,7 @@ class Socket {
   constructor(server) {
     this.io = soket(server, {
       cors: {
-        origin: "http://192.168.43.163:3000",
+        origin: "*",
       },
     });
   }

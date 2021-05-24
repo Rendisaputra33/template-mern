@@ -1,8 +1,6 @@
 import React from "react";
 import { Menu } from "antd";
 import { useSelector } from 'react-redux'
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
 
 function LeftMenu(props) {
   const user = useSelector(state => state.user)
