@@ -10,6 +10,7 @@ router.post("/register", async (req, res) => {
     name: req.body.name,
     password: await hashPassword(req.body.password),
     lastName: req.body.lastName,
+    image: req.body.image
   });
 
   await user.save((err, userData) => {
