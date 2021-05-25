@@ -5,6 +5,8 @@ import moment from "moment";
 import io from "socket.io-client";
 import { getChats, loadChat } from "../../../_actions/chat_action";
 import ChatCard from "./ChatCard";
+import DropZone from "react-dropzone";
+import Axios from "axios";
 
 class ChatPage extends Component {
   state = {
@@ -13,7 +15,7 @@ class ChatPage extends Component {
 
   componentDidMount() {
     this.props.dispatch(getChats());
-    const server = "http://localhost:5000/";
+    const server = "http://192.168.1.15:5000/";
     this.socket = io(server);
     this.socket.on("Output Chat Message", (messagefrombackend) => {
       this.props.dispatch(loadChat(messagefrombackend));
@@ -21,17 +23,14 @@ class ChatPage extends Component {
   }
 
   componentDidUpdate = () => {
-    this.messagesEnd.scrollIntoView({ behavior: 'smooth' })
-  }
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  };
 
-  renderCards = () => {
-    return (this.props.chats.chats&&
-    this.props.chats.chats.map(chat => {
-      return(
-        <ChatCard key={chat._id} {...chat} />
-      )
-    }))
-  }
+  renderCards = () =>
+    this.props.chats.chats &&
+    this.props.chats.chats.map((chat) => {
+      return <ChatCard key={chat._id} {...chat} />;
+    });
 
   handleChange = (e) => {
     this.setState({
@@ -39,16 +38,34 @@ class ChatPage extends Component {
     });
   };
 
+  onDrop = (files) => {
+    console.log(files);
+    const formData = new FormData();
+    const config = { "Content-Type": "multipart/form-data" };
+    formData.append("file", files[0]);
+    Axios.post("/api/chat/upload", formData, config).then((res) => {
+      if (res.data.success) {
+        this.socket.emit("Input Chat Message", {
+          chatMessage: res.data.url,
+          userId: this.props.user.userData._id,
+          userName: this.props.user.userData.name,
+          nowTime: moment(),
+          type: "text",
+        });
+      }
+    });
+  };
+
   submitChat = (e) => {
     e.preventDefault();
 
-    if(this.state.chatMessage != "") {
+    if (this.state.chatMessage !== "") {
       this.socket.emit("Input Chat Message", {
-        chatMessage : this.state.chatMessage,
-        userId : this.props.user.userData._id,
-        userName : this.props.user.userData.name,
-        nowTime : moment(),
-        type : "image",
+        chatMessage: this.state.chatMessage,
+        userId: this.props.user.userData._id,
+        userName: this.props.user.userData.name,
+        nowTime: moment(),
+        type: "text",
       });
       this.setState({ chatMessage: "" });
     }
@@ -63,11 +80,11 @@ class ChatPage extends Component {
         </div>
         {/* this header */}
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <div className="infinite-container" style={{ height: '500px', overflowY: 'scroll' }}>
-
-            {this.props.chats && (
-              <div>{this.renderCards()}</div>
-            )}
+          <div
+            className="infinite-container"
+            style={{ height: "500px", overflowY: "scroll" }}
+          >
+            {this.props.chats && <div>{this.renderCards()}</div>}
 
             <div
               ref={(el) => {
@@ -77,7 +94,11 @@ class ChatPage extends Component {
             />
           </div>
           <Row>
-            <Form layout="inline" onSubmit={this.submitChat} style={{ marginTop: '10px' }}>
+            <Form
+              layout="inline"
+              onSubmit={this.submitChat}
+              style={{ marginTop: "10px" }}
+            >
               <Col span={18}>
                 <Input
                   id="message"
@@ -90,7 +111,20 @@ class ChatPage extends Component {
                   onChange={this.handleChange}
                 />
               </Col>
-              <Col span={2}></Col>
+              <Col span={2}>
+                <DropZone onDrop={this.onDrop}>
+                  {({ getRootProps, getInputProps }) => (
+                    <div {...getRootProps()}>
+                      <section>
+                        <input {...getInputProps()} />
+                        <Button style={{ width: "80%", marginLeft: "8px" }}>
+                          <Icon type="upload" />
+                        </Button>
+                      </section>
+                    </div>
+                  )}
+                </DropZone>
+              </Col>
               <Col span={4}>
                 <Button
                   type="primary"

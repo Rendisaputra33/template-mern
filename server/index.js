@@ -14,7 +14,7 @@ app.use("/api/users", require("./routes/user.routes"));
 // routes chat
 app.use("/api/chat", require("./routes/chat.routes"));
 // static folder for uploded file
-app.use("/uploads", express.static("uploads"));
+app.use('/uploads', express.static('uploads'));
 
 server.listen(process.env.PORT || 3000, () => {
   console.log("server ok!");

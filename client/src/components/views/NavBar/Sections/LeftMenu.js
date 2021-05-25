@@ -1,9 +1,9 @@
 import React from "react";
 import { Menu } from "antd";
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 
 function LeftMenu(props) {
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state.user);
 
   if (user.userData && !user.userData.isAuth) {
     return (
@@ -12,7 +12,12 @@ function LeftMenu(props) {
           <a href="/">Home</a>
         </Menu.Item>
         <Menu.Item key="chat">
-          <a onClick={() => alert('login first to access this page')}>Chat</a>
+          <a
+            onClick={() => alert("login first to access this page")}
+            href="/chat#"
+          >
+            Chat
+          </a>
         </Menu.Item>
       </Menu>
     );
